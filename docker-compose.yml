@@ -1,0 +1,41 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+    ports:
+      - 27017:27017
+    volumes:
+      - db_data:/data/db
+  backend:
+    build: ./backend
+    restart: always
+    environment:
+      RUST_LOG: debug
+      RUST_BACKTRACE: full
+      MONGODB_URI: mongodb://root:root@mongodb:27017/
+      MONGODB_DB: unboundnotes
+    ports:
+      - 8000:8000
+    depends_on:
+      - mongodb
+    volumes:
+      - type: bind
+        source: ./backend
+        target: /app
+  frontend:
+    build: ./frontend
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      - type: bind
+        source: ./frontend
+        target: /app
+    depends_on:
+      - backend
+volumes:
+  db_data:

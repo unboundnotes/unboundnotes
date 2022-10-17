@@ -10,33 +10,28 @@ services:
       - 27017:27017
     volumes:
       - db_data:/data/db
-  backend:
-    build: ./backend
+  postgres:
+    image: postgres:15
     restart: always
     environment:
-      RUST_LOG: debug
-      RUST_BACKTRACE: full
-      MONGODB_URI: mongodb://root:root@mongodb:27017/
-      MONGODB_DB: unboundnotes
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: unboundnotes
+      PGDATA: /var/lib/postgresql/data/pgdata
     ports:
-      - 8000:8000
-    depends_on:
-      - mongodb
+      - 5432:5432
     volumes:
-      - type: bind
-        source: ./backend
-        target: /app
-  frontend:
-    build: ./frontend
+      - psql_db_data:/var/lib/postgresql/data/pgdata
+
+  pgadmin:
+    image: dpage/pgadmin4
     restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: root
+      PGADMIN_DEFAULT_PASSWORD: root
     ports:
-      - 3000:3000
-    volumes:
-      - type: bind
-        source: ./frontend
-        target: /app
-    depends_on:
-      - backend
+      - 8080:80
+
 volumes:
   db_data:
-
+  psql_db_data:

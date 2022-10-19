@@ -1,15 +1,5 @@
 version: '3.8'
 services:
-  mongodb:
-    image: mongo
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
-    ports:
-      - 27017:27017
-    volumes:
-      - db_data:/data/db
   postgres:
     image: postgres:15
     restart: always
@@ -27,11 +17,10 @@ services:
     image: dpage/pgadmin4
     restart: always
     environment:
-      PGADMIN_DEFAULT_EMAIL: root
+      PGADMIN_DEFAULT_EMAIL: root@unboundnotes.com
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
       - 8080:80
 
 volumes:
-  db_data:
   psql_db_data:
